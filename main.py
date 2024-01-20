@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
 from forms import AddForm, AddProjectForm
+from flask_login import UserMixin, LoginManager
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "R4jBwpb@V!w^7d3"
@@ -52,17 +53,8 @@ def projects():
 
 @app.route("/add-project", methods=["GET", "POST"])
 def add_project():
-    add_form = AddForm()
-    if add_form.validate_on_submit():
-        if add_form.password.data == admin_password:
-            return redirect(url_for("project_details"))
-    return render_template("add.html", form=add_form)
-
-
-@app.route("/project_details", methods=["GET", "POST"])
-def project_details():
     project_form = AddProjectForm()
-    if project_form.validate_on_submit():
+    if project_form.validate_on_submit() and project_form.password.data == admin_password:
         new_project = Project(
             name=project_form.project_name.data,
             description=project_form.project_description.data
@@ -71,6 +63,7 @@ def project_details():
         db.session.commit()
         return redirect(url_for("home"))
     return render_template("add_project.html", form=project_form)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
