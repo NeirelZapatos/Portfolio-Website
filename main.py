@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
-from forms import AddForm, AddProjectForm
+from forms import AdminForm, AddProjectForm
 from flask_login import UserMixin, LoginManager
 
 app = Flask(__name__)
@@ -63,6 +63,42 @@ def add_project():
         db.session.commit()
         return redirect(url_for("home"))
     return render_template("add_project.html", form=project_form)
+
+
+@app.route("/project-list", methods=["GET", "POST"])
+def project_list():
+    projects_to_delete = Project.query.all()
+    return render_template("projects.html", projects=projects_to_delete)
+
+
+@app.route("/edit/<int:project_id>", methods=["GET", "POST"])
+def edit_project(project_id):
+    project_to_edit = db.get_or_404(Project, project_id)
+    edit_form = AddProjectForm(
+        project_name=project_to_edit.name,
+        project_description=project_to_edit.description,
+        project_url=project_to_edit.website_url,
+        project_github=project_to_edit.github_url
+    )
+    if edit_form.validate_on_submit() and edit_form.password.data == admin_password:
+        project_to_edit.name = edit_form.project_name.data
+        project_to_edit.description = edit_form.project_description.data
+        project_to_edit.website_url = edit_form.project_url.data
+        project_to_edit.github_url = edit_form.project_github.data
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template("add_project.html", form=edit_form)
+
+
+@app.route("/delete/<int:project_id>", methods=["GET", "POST"])
+def delete_project(project_id):
+    project_to_delete = db.get_or_404(Project, project_id)
+    delete_form = AdminForm()
+    if delete_form.validate_on_submit() and delete_form.password.data == admin_password:
+        db.session.delete(project_to_delete)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template("admin_password.html", form=delete_form)
 
 
 if __name__ == "__main__":

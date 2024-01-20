@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, URL
 from wtforms import PasswordField, SubmitField, StringField
 
-class AddForm(FlaskForm):
+class AdminForm(FlaskForm):
     password = PasswordField(label="Admin Password", validators=[DataRequired()])
     submit = SubmitField(label="Submit")
 
