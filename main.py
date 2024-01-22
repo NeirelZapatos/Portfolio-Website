@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
 from forms import AdminForm, AddProjectForm
-from flask_login import UserMixin, LoginManager
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "R4jBwpb@V!w^7d3"
@@ -57,7 +56,9 @@ def add_project():
     if project_form.validate_on_submit() and project_form.password.data == admin_password:
         new_project = Project(
             name=project_form.project_name.data,
-            description=project_form.project_description.data
+            description=project_form.project_description.data,
+            website_url=project_form.project_url.data,
+            github_url=project_form.project_github.data
         )
         db.session.add(new_project)
         db.session.commit()
@@ -97,7 +98,7 @@ def delete_project(project_id):
     if delete_form.validate_on_submit() and delete_form.password.data == admin_password:
         db.session.delete(project_to_delete)
         db.session.commit()
-        return redirect(url_for("home"))
+        return redirect(url_for("project_list"))
     return render_template("admin_password.html", form=delete_form)
 
 
