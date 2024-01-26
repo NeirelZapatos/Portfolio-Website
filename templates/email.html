@@ -1,5 +1,7 @@
-{% include "header.html" %}
+{% include "header.html" %} {% from 'bootstrap/form.html' import render_form %}
 
-
+<div class="col-lg-5 mx-auto">
+    {{ render_form(form, novalidate=True) }}
+</div>
 
 {% include "footer.html" %}

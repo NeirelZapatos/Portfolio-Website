@@ -3,7 +3,13 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
-from forms import AdminForm, AddProjectForm
+from forms import AdminForm, AddProjectForm, EmailForm
+import smtplib
+from email.mime.text import MIMEText
+
+EMAIL = "pythonganggang1@gmail.com"
+EMAIL_PASSCODE = "wpaw kvhp nwcn wnig"
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "R4jBwpb@V!w^7d3"
@@ -41,8 +47,8 @@ def home():
     # )
     # db.session.add(new_project)
     # db.session.commit()
-    project_list = Project.query.all()
-    return render_template("index.html", project_list=project_list)
+    list_of_projects = Project.query.all()
+    return render_template("index.html", project_list=list_of_projects)
 
 
 @app.route("/projects")
@@ -100,6 +106,24 @@ def delete_project(project_id):
         db.session.commit()
         return redirect(url_for("project_list"))
     return render_template("admin_password.html", form=delete_form)
+
+
+@app.route("/email", methods=["GET", "POST"])
+def email():
+    email_form = EmailForm()
+    if email_form.validate_on_submit():
+        message = f"This is a message from portfolio website   Email: {email_form.email.data}   Message: {email_form.message.data}"
+        msg = MIMEText(message, "plain", "utf-8")
+        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+            connection.starttls()
+            connection.login(EMAIL, EMAIL_PASSCODE)
+            connection.sendmail(
+                from_addr=EMAIL,
+                to_addrs="neirelzapatos@gmail.com",
+                msg=msg.as_string()
+            )
+        return redirect(url_for("home"))
+    return render_template("email.html", form=email_form)
 
 
 if __name__ == "__main__":
