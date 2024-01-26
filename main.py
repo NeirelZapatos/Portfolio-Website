@@ -39,6 +39,7 @@ with app.app_context():
     db.create_all()
 
 
+# home page of website
 @app.route("/")
 def home():
     # new_project = Project(
@@ -51,11 +52,7 @@ def home():
     return render_template("index.html", project_list=list_of_projects)
 
 
-@app.route("/projects")
-def projects():
-    return render_template("projects.html")
-
-
+# form to add project
 @app.route("/add-project", methods=["GET", "POST"])
 def add_project():
     project_form = AddProjectForm()
@@ -72,12 +69,14 @@ def add_project():
     return render_template("add_project.html", form=project_form)
 
 
+# displays project list with edit and delete functions
 @app.route("/project-list", methods=["GET", "POST"])
 def project_list():
     projects_to_delete = Project.query.all()
     return render_template("projects.html", projects=projects_to_delete)
 
 
+# form to edit projects
 @app.route("/edit/<int:project_id>", methods=["GET", "POST"])
 def edit_project(project_id):
     project_to_edit = db.get_or_404(Project, project_id)
@@ -97,6 +96,7 @@ def edit_project(project_id):
     return render_template("add_project.html", form=edit_form)
 
 
+# form to delete project
 @app.route("/delete/<int:project_id>", methods=["GET", "POST"])
 def delete_project(project_id):
     project_to_delete = db.get_or_404(Project, project_id)
@@ -108,6 +108,7 @@ def delete_project(project_id):
     return render_template("admin_password.html", form=delete_form)
 
 
+# form to email me
 @app.route("/email", methods=["GET", "POST"])
 def email():
     email_form = EmailForm()
