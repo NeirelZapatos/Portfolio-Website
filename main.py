@@ -31,8 +31,8 @@ class Project(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     description: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    website_url: Mapped[str] = mapped_column(String, unique=True, nullable=True)
-    github_url: Mapped[str] = mapped_column(String, unique=True, nullable=True)
+    website_url: Mapped[str] = mapped_column(String, unique=False, nullable=True)
+    github_url: Mapped[str] = mapped_column(String, unique=False, nullable=True)
 
 
 with app.app_context():
