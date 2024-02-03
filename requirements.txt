@@ -7,3 +7,4 @@ Bootstrap-Flask==2.3.3
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
 Werkzeug==3.0.1
+email-validator==2.1.0.post1
