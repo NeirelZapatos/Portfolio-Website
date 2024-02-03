@@ -6,16 +6,17 @@ from sqlalchemy import Integer, String
 from forms import AdminForm, AddProjectForm, EmailForm
 import smtplib
 from email.mime.text import MIMEText
+import os
 
-EMAIL = "pythonganggang1@gmail.com"
-EMAIL_PASSCODE = "wpaw kvhp nwcn wnig"
+EMAIL = os.environ.get("SEND_EMAIL")
+EMAIL_PASSCODE = os.environ.get("EMAIL_PASSCODE")
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "R4jBwpb@V!w^7d3"
+app.config["SECRET_KEY"] = os.environ.get("FLASK_KEY")
 Bootstrap5(app)
 
-admin_password = "1234"
+admin_password = os.environ.get("ADMIN_PASSWORD")
 
 
 class Base(DeclarativeBase):
@@ -120,7 +121,7 @@ def email():
             connection.login(EMAIL, EMAIL_PASSCODE)
             connection.sendmail(
                 from_addr=EMAIL,
-                to_addrs="neirelzapatos@gmail.com",
+                to_addrs=os.environ.get("MY_EMAIL"),
                 msg=msg.as_string()
             )
         return redirect(url_for("home"))
@@ -128,4 +129,4 @@ def email():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
