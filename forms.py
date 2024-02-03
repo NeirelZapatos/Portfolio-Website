@@ -12,8 +12,8 @@ class AdminForm(FlaskForm):
 class AddProjectForm(FlaskForm):
     project_name = StringField(label="Project Name", validators=[DataRequired()])
     project_description = StringField(label="Project Description", validators=[DataRequired()])
-    project_url = StringField(label="Project URL")
-    project_github = StringField(label="Project Github URL")
+    project_url = StringField(label="Project URL", validators=[URL()])
+    project_github = StringField(label="Project Github URL", validators=[URL()])
     password = PasswordField(label="Admin Password", validators=[DataRequired()])
     submit = SubmitField(label="Submit")
 
